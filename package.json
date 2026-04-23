@@ -1,0 +1,11 @@
+{
+  "name": "seast-awareness-platform",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev:client": "npm run dev --prefix client",
+    "dev:server": "cd server && python3 run.py",
+    "build": "npm run build --prefix client",
+    "start": "cd server && gunicorn --bind 0.0.0.0:5001 run:app"
+  }
+}
