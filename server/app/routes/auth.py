@@ -8,6 +8,7 @@ from ..extensions import db
 from ..models import RiskHistory, User
 
 auth_bp = Blueprint("auth", __name__)
+PASSWORD_HASH_METHOD = "pbkdf2:sha256"
 
 
 @auth_bp.post("/register")
@@ -31,7 +32,7 @@ def register():
     user = User(
         name=name,
         email=email,
-        password_hash=generate_password_hash(password),
+        password_hash=generate_password_hash(password, method=PASSWORD_HASH_METHOD),
         role="admin" if allowed_role == "admin" else "user",
         department=department,
         risk_score=10 if allowed_role == "admin" else 35,

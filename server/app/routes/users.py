@@ -7,6 +7,7 @@ from ..extensions import db
 from ..models import RiskHistory, User
 
 users_bp = Blueprint("users", __name__)
+PASSWORD_HASH_METHOD = "pbkdf2:sha256"
 
 
 @users_bp.get("")
@@ -31,7 +32,7 @@ def create_user(admin_user):
     user = User(
         name=payload["name"].strip(),
         email=payload["email"].strip().lower(),
-        password_hash=generate_password_hash(payload["password"]),
+        password_hash=generate_password_hash(payload["password"], method=PASSWORD_HASH_METHOD),
         role=payload.get("role", "user"),
         department=payload.get("department", "General"),
         risk_score=int(payload.get("riskScore", 35)),
@@ -59,7 +60,7 @@ def update_user(admin_user, user_id):
     if "points" in payload:
         user.points = int(payload["points"])
     if payload.get("password"):
-        user.password_hash = generate_password_hash(payload["password"])
+        user.password_hash = generate_password_hash(payload["password"], method=PASSWORD_HASH_METHOD)
     db.session.commit()
     return jsonify({"user": user.to_dict()})
 
